@@ -2,11 +2,14 @@ import React from "react";
 
 export default function Navbar() {
   return (
-    <nav className="bg-white shadow px-6 py-4 flex justify-between items-center">
-      <h1 className="text-xl font-bold">SaaS Starter</h1>
-      <div>
-        {/* Add links/buttons later */}
+    <header className="bg-white shadow p-4 flex justify-between items-center">
+      <h2 className="text-lg font-semibold">Dashboard</h2>
+      <div className="flex items-center space-x-4">
+        <span className="text-gray-600">Admin</span>
+        <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+          Logout
+        </button>
       </div>
-    </nav>
+    </header>
   );
 }

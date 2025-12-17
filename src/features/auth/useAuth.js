@@ -1,11 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "./authSlice";
 
-export const useAuth = () => {
+export function useAuth() {
   const dispatch = useDispatch();
-  const authState = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const doLogin = (userData) => {
+    // In frontend-only app, you can mock login
     dispatch(login(userData));
   };
 
@@ -13,5 +14,5 @@ export const useAuth = () => {
     dispatch(logout());
   };
 
-  return { authState, doLogin, doLogout };
-};
+  return { isAuthenticated, user, login: doLogin, logout: doLogout };
+}
