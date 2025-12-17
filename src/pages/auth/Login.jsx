@@ -13,12 +13,9 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    // Simulate login
     const dummyUser = { name: "Admin User", email, role: "admin" };
     doLogin(dummyUser);
-
-    navigate("/dashboard"); // redirect to dashboard
+    navigate("/dashboard");
   };
 
   return (

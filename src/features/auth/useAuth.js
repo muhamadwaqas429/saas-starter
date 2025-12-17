@@ -1,9 +1,9 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "./authSlice";
 
-export default function useAuth() {
+export const useAuth = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const authState = useSelector((state) => state.auth);
 
   const doLogin = (userData) => {
     dispatch(login(userData));
@@ -13,10 +13,5 @@ export default function useAuth() {
     dispatch(logout());
   };
 
-  return {
-    isLoggedIn,
-    user,
-    doLogin,
-    doLogout,
-  };
-}
+  return { authState, doLogin, doLogout };
+};
