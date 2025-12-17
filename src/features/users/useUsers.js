@@ -1,14 +1,31 @@
-import { useDispatch, useSelector } from "react-redux";
-import { setUsers, addUser, clearUsers } from "./usersSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { setUsers, addUser, removeUser, clearUsers } from "./usersSlice";
 
-export const useUsers = () => {
+export default function useUsers() {
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.users.list);
+  const users = useSelector((state) => state.users.users);
+
+  const initializeUsers = (userList) => {
+    dispatch(setUsers(userList));
+  };
+
+  const createUser = (user) => {
+    dispatch(addUser(user));
+  };
+
+  const deleteUser = (id) => {
+    dispatch(removeUser(id));
+  };
+
+  const resetUsers = () => {
+    dispatch(clearUsers());
+  };
 
   return {
     users,
-    setUsers: (data) => dispatch(setUsers(data)),
-    addUser: (user) => dispatch(addUser(user)),
-    clearUsers: () => dispatch(clearUsers()),
+    initializeUsers,
+    createUser,
+    deleteUser,
+    resetUsers,
   };
-};
+}

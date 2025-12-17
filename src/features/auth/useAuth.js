@@ -1,14 +1,22 @@
-import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess, logout } from "./authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { login, logout } from "./authSlice";
 
-export const useAuth = () => {
+export default function useAuth() {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
+  const doLogin = (userData) => {
+    dispatch(login(userData));
+  };
+
+  const doLogout = () => {
+    dispatch(logout());
+  };
 
   return {
-    user: auth.user,
-    isAuthenticated: auth.isAuthenticated,
-    login: (data) => dispatch(loginSuccess(data)),
-    logout: () => dispatch(logout()),
+    isLoggedIn,
+    user,
+    doLogin,
+    doLogout,
   };
-};
+}
