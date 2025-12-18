@@ -1,56 +1,39 @@
-import React from "react";
-
 export default function StatCard({
   title,
   value,
-  icon,
-  change,
-  trend,
+  delta,
   description,
-  size = "md",
 }) {
-  // Adjust styles based on size
-  const sizeStyles = {
-    sm: "p-3 text-sm",
-    md: "p-4 text-base",
-    lg: "p-6 text-lg",
-  };
-
-  const arrow = trend === "up" ? "▲" : trend === "down" ? "▼" : "";
-
-  const arrowColor = trend === "up" ? "text-green-600" : "text-red-600";
+  const isNegative = delta?.startsWith("-");
 
   return (
-    <div
-      className={`flex items-center ${sizeStyles[size]} bg-white rounded-lg shadow hover:shadow-md transition-shadow w-full`}
-    >
-      {/* Icon */}
-      {icon && (
-        <div
-          className={`p-2 rounded-full bg-gray-100 flex items-center justify-center`}
-        >
-          {icon}
-        </div>
-      )}
-
-      {/* Content */}
-      <div className="ml-4 flex-1">
-        <p className="text-gray-500 font-medium">{title}</p>
-        <p className="text-gray-800 font-semibold text-xl">{value}</p>
-
-        {change && (
-          <p
-            className={`flex items-center space-x-1 mt-1 font-medium ${arrowColor}`}
-          >
-            <span>{arrow}</span>
-            <span>{change}</span>
+    <div className="bg-white border border-slate-200 rounded-xl p-6">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+            {title}
           </p>
-        )}
+          <h3 className="mt-2 text-2xl font-semibold text-slate-900">
+            {value}
+          </h3>
+        </div>
 
-        {description && (
-          <p className="text-gray-400 text-sm mt-1">{description}</p>
+        {delta && (
+          <span
+            className={`text-xs font-medium ${
+              isNegative ? "text-rose-600" : "text-emerald-600"
+            }`}
+          >
+            {delta}
+          </span>
         )}
       </div>
+
+      {description && (
+        <p className="mt-3 text-sm text-slate-500">
+          {description}
+        </p>
+      )}
     </div>
   );
 }

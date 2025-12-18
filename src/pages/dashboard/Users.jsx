@@ -1,38 +1,54 @@
-import React from "react";
-import DataTable from "@/components/tables/DataTable";
+import React, { useState, useMemo } from "react";
+import { useSelector } from "react-redux";
 import { useUsers } from "@/features/users/useUsers";
-import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { DataTable } from "@/components/tables/DataTable";
+import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 export default function Users() {
   const { users } = useUsers();
+  const [search, setSearch] = useState("");
+
+  const filteredUsers = useMemo(() => {
+    return users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [users, search]);
 
   const columns = [
-    { key: "id", label: "ID" },
-    { key: "name", label: "Name" },
-    { key: "email", label: "Email" },
+    { header: "Name", accessor: "name" },
+    { header: "Email", accessor: "email" },
+    { header: "Role", accessor: "role" },
     {
-      key: "active",
-      label: "Active",
-      render: (value, row) => <Switch checked={value} readOnly />,
-    },
-    {
-      key: "actions",
-      label: "Actions",
-      render: (_, row) => (
-        <button
-          className="text-blue-600 hover:text-blue-800 font-medium"
-          onClick={() => alert(`Edit user: ${row.name}`)}
-        >
-          Edit
-        </button>
+      header: "Actions",
+      accessor: "actions",
+      cell: (row) => (
+        <div className="flex space-x-2">
+          <button className="text-blue-500 hover:text-blue-700">
+            <PencilIcon className="h-5 w-5" />
+          </button>
+          <button className="text-red-500 hover:text-red-700">
+            <TrashIcon className="h-5 w-5" />
+          </button>
+        </div>
       ),
     },
   ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-4">
       <h2 className="text-xl font-semibold text-gray-700">Users</h2>
-      <DataTable columns={columns} data={users || []} />
+
+      <Input
+        placeholder="Search by name or email..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full max-w-sm"
+      />
+
+      <DataTable columns={columns} data={filteredUsers} />
     </div>
   );
 }

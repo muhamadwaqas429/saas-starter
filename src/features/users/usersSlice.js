@@ -1,27 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  users: [], // array of user objects
+  list: [
+    { name: "John Doe", email: "john@example.com", role: "Admin" },
+    { name: "Jane Smith", email: "jane@example.com", role: "User" },
+    { name: "Mark Wilson", email: "mark@example.com", role: "User" },
+  ],
 };
 
-const usersSlice = createSlice({
+export const usersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
     setUsers: (state, action) => {
-      state.users = action.payload;
+      state.list = action.payload;
     },
     addUser: (state, action) => {
-      state.users.push(action.payload);
-    },
-    removeUser: (state, action) => {
-      state.users = state.users.filter(user => user.id !== action.payload);
+      state.list.push(action.payload);
     },
     clearUsers: (state) => {
-      state.users = [];
+      state.list = [];
     },
   },
 });
 
-export const { setUsers, addUser, removeUser, clearUsers } = usersSlice.actions;
+export const { setUsers, addUser, clearUsers } = usersSlice.actions;
 export default usersSlice.reducer;
