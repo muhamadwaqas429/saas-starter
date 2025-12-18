@@ -1,39 +1,37 @@
-export default function StatCard({
-  title,
-  value,
-  delta,
-  description,
-}) {
-  const isNegative = delta?.startsWith("-");
+export default function StatCard({ title, value, trend }) {
+  const isPositive = trend?.startsWith("+");
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
-            {title}
-          </p>
-          <h3 className="mt-2 text-2xl font-semibold text-slate-900">
-            {value}
-          </h3>
-        </div>
+    <div className="group rounded-xl border border-slate-800 bg-slate-950 p-5 transition hover:border-slate-700 hover:bg-slate-900">
+      {/* Title */}
+      <p className="text-sm text-slate-400">
+        {title}
+      </p>
 
-        {delta && (
+      {/* Value */}
+      <div className="mt-2 flex items-end justify-between">
+        <h2 className="text-2xl font-semibold text-white tracking-tight">
+          {value}
+        </h2>
+
+        {trend && (
           <span
             className={`text-xs font-medium ${
-              isNegative ? "text-rose-600" : "text-emerald-600"
+              isPositive ? "text-emerald-400" : "text-red-400"
             }`}
           >
-            {delta}
+            {trend}
           </span>
         )}
       </div>
 
-      {description && (
-        <p className="mt-3 text-sm text-slate-500">
-          {description}
-        </p>
-      )}
+      {/* Divider */}
+      <div className="mt-4 h-px w-full bg-slate-800" />
+
+      {/* Footer */}
+      <p className="mt-3 text-xs text-slate-500">
+        Compared to last period
+      </p>
     </div>
   );
 }
