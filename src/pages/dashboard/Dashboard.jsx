@@ -1,4 +1,3 @@
-import StatCard from "@/components/cards/StatCard";
 import {
   LineChart,
   Line,
@@ -7,152 +6,120 @@ import {
   PieChart,
   Pie,
   Cell,
+  ResponsiveContainer,
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer,
 } from "recharts";
+import StatCard from "@/components/cards/StatCard";
 
-const revenueData = [
-  { name: "Jan", value: 12000 },
-  { name: "Feb", value: 18500 },
-  { name: "Mar", value: 24000 },
-  { name: "Apr", value: 31500 },
-  { name: "May", value: 38120 },
+const lineData = [
+  { name: "Jan", value: 400 },
+  { name: "Feb", value: 300 },
+  { name: "Mar", value: 500 },
+  { name: "Apr", value: 450 },
+  { name: "May", value: 600 },
 ];
 
-const trafficData = [
-  { name: "Mon", value: 3200 },
-  { name: "Tue", value: 4100 },
-  { name: "Wed", value: 3800 },
-  { name: "Thu", value: 4600 },
-  { name: "Fri", value: 5200 },
+const barData = [
+  { name: "Mon", value: 120 },
+  { name: "Tue", value: 200 },
+  { name: "Wed", value: 150 },
+  { name: "Thu", value: 300 },
+  { name: "Fri", value: 250 },
 ];
 
-const usersSplit = [
-  { name: "Active", value: 9821 },
-  { name: "Inactive", value: 4561 },
+const pieData = [
+  { name: "Desktop", value: 65 },
+  { name: "Mobile", value: 25 },
+  { name: "Tablet", value: 10 },
 ];
 
-const activities = [
-  { user: "Ali Raza", action: "Upgraded plan", time: "2 min ago" },
-  { user: "Sara Khan", action: "Created report", time: "18 min ago" },
-  { user: "John Doe", action: "Invited team member", time: "1 hr ago" },
-  { user: "Ahmed", action: "Cancelled subscription", time: "3 hrs ago" },
-];
+const COLORS = ["#22c55e", "#3b82f6", "#f59e0b"];
 
 export default function Dashboard() {
   return (
-    <main className="flex-1 bg-slate-950 min-h-screen text-slate-200">
-      <div className="p-6 space-y-10">
-        {/* Page Header */}
-        <div>
-          <h1 className="text-2xl font-semibold">Dashboard</h1>
-          <p className="text-slate-400 text-sm">
-            Overview of your business performance
-          </p>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
+        <p className="text-slate-400 mt-1">Analytics overview</p>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Revenue" value="$24,300" trend="+12%" />
+        <StatCard title="Active Users" value="1,284" trend="+8%" />
+        <StatCard title="Conversion" value="3.4%" trend="+1.2%" />
+        <StatCard title="Growth" value="18%" trend="+4%" />
+      </div>
+
+      {/* Line Chart */}
+      <div className="rounded-lg border border-slate-800 bg-slate-950 p-4">
+        <h3 className="mb-4 text-sm font-medium text-slate-300">
+          Revenue Over Time
+        </h3>
+        <div className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={lineData}>
+              <XAxis dataKey="name" stroke="#64748b" />
+              <YAxis stroke="#64748b" />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#22c55e"
+                strokeWidth={2}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
+      </div>
 
-        {/* Primary KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard title="Monthly Revenue" value="$38,120" delta="+11.2%" />
-          <StatCard title="Active Users" value="9,821" delta="+3.1%" />
-          <StatCard title="New Signups" value="1,284" delta="+5.6%" />
-          <StatCard title="Churn Rate" value="2.3%" delta="-0.6%" />
-        </div>
-
-        {/* Analytics Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Revenue Chart */}
-          <div className="xl:col-span-2 bg-slate-900 rounded-xl p-6">
-            <div className="mb-4">
-              <h3 className="font-medium">Revenue Growth</h3>
-              <p className="text-sm text-slate-400">
-                Monthly revenue performance
-              </p>
-            </div>
-
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={revenueData}>
-                  <XAxis dataKey="name" stroke="#9ca3af" />
-                  <YAxis stroke="#9ca3af" />
-                  <Tooltip />
-                  <Line
-                    dataKey="value"
-                    stroke="#6366f1"
-                    strokeWidth={3}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* User Split */}
-          <div className="bg-slate-900 rounded-xl p-6">
-            <h3 className="font-medium mb-1">User Status</h3>
-            <p className="text-sm text-slate-400 mb-4">
-              Active vs inactive users
-            </p>
-
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={usersSplit}
-                    dataKey="value"
-                    innerRadius={65}
-                    outerRadius={95}
-                  >
-                    <Cell fill="#6366f1" />
-                    <Cell fill="#1f2937" />
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+      {/* Secondary Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Bar Chart */}
+        <div className="rounded-lg border border-slate-800 bg-slate-950 p-4">
+          <h3 className="mb-4 text-sm font-medium text-slate-300">
+            Weekly Activity
+          </h3>
+          <div className="h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={barData}>
+                <XAxis dataKey="name" stroke="#64748b" />
+                <YAxis stroke="#64748b" />
+                <Tooltip />
+                <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Traffic + Activity */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {/* Traffic */}
-          <div className="bg-slate-900 rounded-xl p-6">
-            <h3 className="font-medium mb-4">Weekly Traffic</h3>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={trafficData}>
-                  <XAxis dataKey="name" stroke="#9ca3af" />
-                  <YAxis stroke="#9ca3af" />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#6366f1" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Activity */}
-          <div className="bg-slate-900 rounded-xl p-6">
-            <h3 className="font-medium mb-4">Recent Activity</h3>
-
-            <ul className="space-y-4">
-              {activities.map((item, index) => (
-                <li
-                  key={index}
-                  className="flex items-center justify-between text-sm"
+        {/* Pie Chart */}
+        <div className="rounded-lg border border-slate-800 bg-slate-950 p-4">
+          <h3 className="mb-4 text-sm font-medium text-slate-300">
+            Users by Device
+          </h3>
+          <div className="h-[260px] flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={4}
+                  dataKey="value"
                 >
-                  <div>
-                    <span className="font-medium text-white">{item.user}</span>{" "}
-                    <span className="text-slate-400">{item.action}</span>
-                  </div>
-                  <span className="text-slate-500">{item.time}</span>
-                </li>
-              ))}
-            </ul>
+                  {pieData.map((_, index) => (
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
