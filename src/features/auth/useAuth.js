@@ -1,18 +1,21 @@
-import { useSelector, useDispatch } from "react-redux";
-import { login, logout } from "./authSlice";
+import { useState, useEffect } from "react";
 
 export function useAuth() {
-  const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("currentUser")) || null
+  );
 
-  const doLogin = (userData) => {
-    // In frontend-only app, you can mock login
-    dispatch(login(userData));
+  const isAuthenticated = !!user;
+
+  const login = (userData) => {
+    localStorage.setItem("currentUser", JSON.stringify(userData));
+    setUser(userData);
   };
 
-  const doLogout = () => {
-    dispatch(logout());
+  const logout = () => {
+    localStorage.removeItem("currentUser");
+    setUser(null);
   };
 
-  return { isAuthenticated, user, login: doLogin, logout: doLogout };
+  return { isAuthenticated, user, login, logout };
 }

@@ -1,53 +1,63 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/useAuth";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find(u => u.email === email && u.password === password);
 
-    // Mock authentication: just check non-empty
-    if (email && password) {
-      login({ email, name: "Admin" });
-      navigate("/dashboard", { replace: true });
+    if (user) {
+      login(user);
+      navigate("/dashboard");
     } else {
-      alert("Please enter email and password");
+      alert("Invalid credentials! Please register first.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4"
-      >
-        <h2 className="text-2xl font-semibold text-gray-700">Login</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-indigo-500"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-indigo-500"
-        />
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
-        >
-          Login
-        </button>
-      </form>
+    <div className="flex min-h-screen items-center justify-center bg-slate-950">
+      <div className="w-full max-w-md bg-slate-900 p-8 rounded-lg shadow-lg">
+        <h1 className="text-2xl font-bold text-white text-center mb-6">
+          Login to SaaS Starter
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-3 rounded-md bg-slate-800 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 rounded-md bg-slate-800 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold p-3 rounded-md transition"
+          >
+            Login
+          </button>
+        </form>
+        <p className="text-center text-slate-400 mt-4">
+          Don't have an account?{" "}
+          <a href="/register" className="text-indigo-500 hover:underline">
+            Register
+          </a>
+        </p>
+      </div>
     </div>
   );
 }

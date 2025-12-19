@@ -1,88 +1,114 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/features/auth/useAuth";
 import {
-  LayoutDashboard,
-  BarChart3,
-  FileText,
-  Users,
-  CreditCard,
-  Settings,
-  HelpCircle,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import { useState } from "react";
+  HomeIcon,
+  ChartBarIcon,
+  DocumentTextIcon,
+  UsersIcon,
+  CreditCardIcon,
+  CogIcon,
+  LifebuoyIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  XMarkIcon,
+  ArrowLeftOnRectangleIcon,
+} from "@heroicons/react/24/outline";
 
 const sections = [
   {
     title: "Overview",
     items: [
-      { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-      { label: "Analytics", path: "/dashboard/analytics", icon: BarChart3 },
-      { label: "Reports", path: "/dashboard/reports", icon: FileText },
+      { name: "Dashboard", path: "/dashboard", icon: HomeIcon },
+      { name: "Analytics", path: "/dashboard/analytics", icon: ChartBarIcon },
+      { name: "Reports", path: "/dashboard/reports", icon: DocumentTextIcon },
     ],
   },
   {
     title: "Management",
     items: [
-      { label: "Users", path: "/dashboard/users", icon: Users },
-      { label: "Billing", path: "/dashboard/billing", icon: CreditCard },
+      { name: "Users", path: "/dashboard/users", icon: UsersIcon },
+      { name: "Billing", path: "/dashboard/billing", icon: CreditCardIcon },
     ],
   },
   {
-    title: "Account",
+    title: "Support",
     items: [
-      { label: "Settings", path: "/dashboard/settings", icon: Settings },
-      { label: "Help", path: "/dashboard/help", icon: HelpCircle },
+      { name: "Settings", path: "/dashboard/settings", icon: CogIcon },
+      { name: "Help", path: "/dashboard/help", icon: LifebuoyIcon },
     ],
   },
 ];
 
-export default function Sidebar({ open, onClose }) {
-  const [collapsed, setCollapsed] = useState(false);
+export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(
+    localStorage.getItem("sidebarCollapsed") === "true"
+  );
+
+  useEffect(() => {
+    localStorage.setItem("sidebarCollapsed", collapsed);
+  }, [collapsed]);
+
+  const widthClass = collapsed ? "w-20" : "w-64";
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+    setSidebarOpen(false);
+  };
 
   return (
     <>
       {/* Mobile overlay */}
-      {open && (
+      {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
-          onClick={onClose}
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
         />
       )}
 
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50
-          ${collapsed ? "w-20" : "w-64"}
-          bg-slate-950 border-r border-slate-800
-          transition-all duration-300
-          ${open ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0 lg:static
+          fixed lg:static inset-y-0 left-0 z-50
+          ${widthClass}
+          bg-slate-900 border-r border-slate-800
+          transform transition-all duration-300
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0
+          flex flex-col
         `}
       >
-        {/* Brand */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800">
+        {/* Header */}
+        <div className="flex items-center justify-between h-16 px-4 border-b border-slate-800">
           {!collapsed && (
-            <div>
-              <div className="text-white font-semibold">SaaS Starter</div>
-              <div className="text-xs text-slate-400">Analytics Platform</div>
-            </div>
+            <span className="text-lg font-semibold">SaaS Starter</span>
           )}
 
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="hidden lg:flex p-1 rounded hover:bg-slate-800"
-          >
-            {collapsed ? (
-              <ChevronRight className="h-4 w-4 text-slate-400" />
-            ) : (
-              <ChevronLeft className="h-4 w-4 text-slate-400" />
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              className="hidden lg:flex text-slate-400 hover:text-white"
+              onClick={() => setCollapsed(!collapsed)}
+            >
+              {collapsed ? (
+                <ChevronRightIcon className="h-5 w-5" />
+              ) : (
+                <ChevronLeftIcon className="h-5 w-5" />
+              )}
+            </button>
+
+            <button
+              className="lg:hidden text-slate-400 hover:text-white"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <XMarkIcon className="h-6 w-6" />
+            </button>
+          </div>
         </div>
 
         {/* Navigation */}
-        <div className="px-2 py-4 space-y-6">
+        <nav className="px-3 py-4 space-y-6 overflow-y-auto flex-1">
           {sections.map((section) => (
             <div key={section.title}>
               {!collapsed && (
@@ -92,34 +118,44 @@ export default function Sidebar({ open, onClose }) {
               )}
 
               <div className="space-y-1">
-                {section.items.map((item) => {
-                  const Icon = item.icon;
+                {section.items.map(({ name, path, icon: Icon }) => (
+                  <NavLink
+                    key={path}
+                    to={path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={({ isActive }) =>
+                      `group relative flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
+                      ${
+                        isActive
+                          ? "bg-indigo-600 text-white"
+                          : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                      }`
+                    }
+                  >
+                    <Icon className="h-5 w-5 shrink-0" />
+                    {!collapsed && <span>{name}</span>}
 
-                  return (
-                    <NavLink
-                      key={item.path}
-                      to={item.path}
-                      end
-                      className={({ isActive }) =>
-                        `
-                        flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
-                        transition-colors
-                        ${
-                          isActive
-                            ? "bg-slate-800 text-white"
-                            : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
-                        }
-                      `
-                      }
-                    >
-                      <Icon className="h-5 w-5 shrink-0" />
-                      {!collapsed && <span>{item.label}</span>}
-                    </NavLink>
-                  );
-                })}
+                    {collapsed && (
+                      <span className="absolute left-14 z-50 rounded-md bg-black px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100 transition">
+                        {name}
+                      </span>
+                    )}
+                  </NavLink>
+                ))}
               </div>
             </div>
           ))}
+        </nav>
+
+        {/* Logout Button */}
+        <div className="px-3 py-4 border-t border-slate-800">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2 rounded-md text-red-500 hover:bg-slate-800 w-full"
+          >
+            <ArrowLeftOnRectangleIcon className="h-5 w-5" />
+            {!collapsed && <span>Logout</span>}
+          </button>
         </div>
       </aside>
     </>
