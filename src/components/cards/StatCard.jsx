@@ -1,4 +1,12 @@
+
+//display 1 KPI CARD 
+// TITEL VALUE trend
+
+// Used in dashboards
+
+// Reusable for analytics, reports, finance
 export default function StatCard({ title, value, trend }) {
+  
   const isPositive = trend?.startsWith("+");
 
   return (

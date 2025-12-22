@@ -1,3 +1,8 @@
+// data array → passed to chart
+
+// Each object = one data point
+
+// Recharts renders SVG chart
 import {
   LineChart,
   Line,

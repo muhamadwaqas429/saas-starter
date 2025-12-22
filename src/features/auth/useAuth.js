@@ -1,21 +1,37 @@
-import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginSuccess, logout as logoutAction } from "./authSlice";
+import mockData from "@/data/mockData.json";
 
 export function useAuth() {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("currentUser")) || null
-  );
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
 
-  const isAuthenticated = !!user;
+  const login = (email, password) => {
+    const user = mockData.users.find(
+      (u) => u.email === email && u.password === password
+    );
 
-  const login = (userData) => {
-    localStorage.setItem("currentUser", JSON.stringify(userData));
-    setUser(userData);
+    if (!user) return false;
+
+    dispatch(
+      loginSuccess({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      })
+    );
+
+    return true;
   };
 
   const logout = () => {
-    localStorage.removeItem("currentUser");
-    setUser(null);
+    dispatch(logoutAction());
   };
 
-  return { isAuthenticated, user, login, logout };
+  return {
+    isAuthenticated: auth.isAuthenticated,
+    user: auth.user,
+    login,
+    logout,
+  };
 }

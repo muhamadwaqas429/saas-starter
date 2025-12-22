@@ -34,6 +34,8 @@ export function DataTable({ columns, data }) {
                     key={col.accessor}
                     className="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
                   >
+                    {/* Custom cell rendering
+                    Buttons, badges, icons inside cells */}
                     {col.cell ? col.cell(row) : row[col.accessor]}
                   </td>
                 ))}
