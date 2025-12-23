@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, logout as logoutAction } from "./authSlice";
-import mockData from "@/data/mockData.json";
+import mockData from "../../data/users.mock.json";
 
 export function useAuth() {
   const dispatch = useDispatch();

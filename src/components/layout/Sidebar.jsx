@@ -15,8 +15,6 @@ import {
   ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
-
-
 const sections = [
   {
     title: "Overview",

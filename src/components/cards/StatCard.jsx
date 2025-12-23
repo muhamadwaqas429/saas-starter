@@ -1,45 +1,27 @@
+import mockData from "@/data/mockData";
 
-//display 1 KPI CARD 
-// TITEL VALUE trend
+export default function StatsCards() {
+  const totalUsers = mockData.length;
+  const activeUsers = mockData.filter((u) => u.status === "active").length;
+  const adminCount = mockData.filter((u) => u.role === "admin").length;
 
-// Used in dashboards
-
-// Reusable for analytics, reports, finance
-export default function StatCard({ title, value, trend }) {
-  
-  const isPositive = trend?.startsWith("+");
+  const cardData = [
+    { label: "Total Users", value: totalUsers, color: "bg-blue-500" },
+    { label: "Active Users", value: activeUsers, color: "bg-green-500" },
+    { label: "Admins", value: adminCount, color: "bg-purple-500" },
+  ];
 
   return (
-    <div className="group rounded-xl border border-slate-800 bg-slate-950 p-5 transition hover:border-slate-700 hover:bg-slate-900">
-      {/* Title */}
-      <p className="text-sm text-slate-400">
-        {title}
-      </p>
-
-      {/* Value */}
-      <div className="mt-2 flex items-end justify-between">
-        <h2 className="text-2xl font-semibold text-white tracking-tight">
-          {value}
-        </h2>
-
-        {trend && (
-          <span
-            className={`text-xs font-medium ${
-              isPositive ? "text-emerald-400" : "text-red-400"
-            }`}
-          >
-            {trend}
-          </span>
-        )}
-      </div>
-
-      {/* Divider */}
-      <div className="mt-4 h-px w-full bg-slate-800" />
-
-      {/* Footer */}
-      <p className="mt-3 text-xs text-slate-500">
-        Compared to last period
-      </p>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {cardData.map((card) => (
+        <div
+          key={card.label}
+          className={`${card.color} text-white p-4 rounded shadow flex flex-col justify-center`}
+        >
+          <span className="text-sm">{card.label}</span>
+          <span className="text-2xl font-bold">{card.value}</span>
+        </div>
+      ))}
     </div>
   );
 }

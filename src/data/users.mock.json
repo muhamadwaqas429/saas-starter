@@ -1,0 +1,36 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Ali Khan",
+      "email": "ali.khan@example.com",
+      "role": "admin",
+      "status": "active",
+      "avatar": null
+    },
+    {
+      "id": "u2",
+      "name": "Sara Ahmed",
+      "email": "sara.ahmed@example.com",
+      "role": "user",
+      "status": "inactive",
+      "avatar": null
+    },
+    {
+      "id": "u3",
+      "name": "Usman Raza",
+      "email": "usman.raza@example.com",
+      "role": "user",
+      "status": "active",
+      "avatar": null
+    },
+    {
+      "id": "u4",
+      "name": "Hira Noor",
+      "email": "hira.noor@example.com",
+      "role": "admin",
+      "status": "active",
+      "avatar": null
+    }
+  ]
+}
