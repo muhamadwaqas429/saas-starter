@@ -1,9 +1,7 @@
-import mockData from "@/data/mockData";
-
-export default function StatsCards() {
-  const totalUsers = mockData.length;
-  const activeUsers = mockData.filter((u) => u.status === "active").length;
-  const adminCount = mockData.filter((u) => u.role === "admin").length;
+export default function StatsCards({ users }) {
+  const totalUsers = users.length;
+  const activeUsers = users.filter((u) => u.status === "active").length;
+  const adminCount = users.filter((u) => u.role === "admin").length;
 
   const cardData = [
     { label: "Total Users", value: totalUsers, color: "bg-blue-500" },
@@ -12,7 +10,7 @@ export default function StatsCards() {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
       {cardData.map((card) => (
         <div
           key={card.label}

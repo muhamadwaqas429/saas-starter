@@ -1,52 +1,89 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/features/auth/useAuth";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/features/auth/useAuth.jsx";
 
 export default function Login() {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    const success = login(email, password);
-
-    if (!success) {
+    const success = await login(email, password);
+    if (success) {
+      navigate("/dashboard");
+    } else {
       setError("Invalid email or password");
-      return;
     }
 
-    navigate("/dashboard");
+    setLoading(false);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h1 className="text-xl font-semibold">Login</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-600 p-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        <h1 className="text-3xl font-bold text-center text-gray-800">
+          Welcome Back
+        </h1>
+        <p className="text-sm text-center text-gray-500">
+          Sign in to your account
+        </p>
 
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && (
+          <div className="text-red-600 text-sm text-center font-medium">
+            {error}
+          </div>
+        )}
 
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        className="w-full border p-2 rounded"
-      />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="you@example.com"
+              className="mt-1"
+            />
+          </div>
 
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        className="w-full border p-2 rounded"
-      />
+          <div>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Your password"
+              className="mt-1"
+            />
+          </div>
 
-      <button className="w-full bg-slate-900 text-white p-2 rounded">
-        Login
-      </button>
-    </form>
+          <Button type="submit" className="w-full py-2" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </Button>
+        </form>
+
+        <p className="text-xs text-gray-400 text-center">
+          Don’t have an account?{" "}
+          <Link to="/register" className="text-indigo-500 hover:underline">
+            Register
+          </Link>
+        </p>
+      </div>
+    </div>
   );
 }
