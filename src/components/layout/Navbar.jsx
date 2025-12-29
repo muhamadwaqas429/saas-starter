@@ -1,4 +1,4 @@
-import { Menu, Bell, Search, LogOut } from "lucide-react";
+import { Menu, Bell, LogOut, Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -9,17 +9,16 @@ import {
 import { useAuth } from "@/features/auth/useAuth";
 
 export default function Navbar({ onToggleSidebar }) {
-  const { logout, user } = useAuth(); // get user dynamically
+  const { logout, user } = useAuth();
 
-  // Online avatar image link
   const avatarUrl =
     user?.avatar ||
-    "https://png.pngtree.com/png-clipart/20231019/original/pngtree-user-profile-avatar-png-image_13369988.png"; // random online avatar
+    "https://png.pngtree.com/png-clipart/20231019/original/pngtree-user-profile-avatar-png-image_13369988.png";
 
   return (
     <header className="sticky top-0 z-40 h-16 border-b border-slate-800 bg-slate-950/90 backdrop-blur flex-shrink-0">
       <div className="flex h-full items-center justify-between px-4 lg:px-6">
-        {/* Left: Logo + Mobile Sidebar Toggle */}
+        {/* Left: Mobile toggle + Logo */}
         <div className="flex items-center gap-4">
           <button
             onClick={onToggleSidebar}
@@ -30,7 +29,7 @@ export default function Navbar({ onToggleSidebar }) {
 
           <div className="flex items-center gap-2">
             <img
-              src="https://dbuzz-assets.s3.amazonaws.com/ai_image/public/flt/image-1766077100256.jpeg" // online logo
+              src="https://dbuzz-assets.s3.amazonaws.com/ai_image/public/flt/image-1766077100256.jpeg"
               alt="Logo"
               className="h-8 w-8"
             />
@@ -72,7 +71,6 @@ export default function Navbar({ onToggleSidebar }) {
                   {user?.name || "Waqas"}
                 </span>
 
-                {/* Online Status */}
                 <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 border-2 border-slate-950" />
               </button>
             </DropdownMenuTrigger>
