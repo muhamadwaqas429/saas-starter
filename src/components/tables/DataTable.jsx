@@ -21,13 +21,11 @@ export default function UsersTable({
     status: "active",
   });
 
-  // Sync props from parent
   useEffect(() => {
     setUsers(propUsers || []);
     setLoading(propLoading);
   }, [propUsers, propLoading]);
 
-  // Open edit modal
   const handleEdit = (user) => {
     if (!user?._id) return toast.error("User ID missing");
     setEditingUser(user);
@@ -40,49 +38,36 @@ export default function UsersTable({
     setModalOpen(true);
   };
 
-  // Input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Save updated user
   const handleSave = async () => {
     if (!editingUser?._id) return toast.error("User ID missing");
     try {
       const res = await api.put(`/users/${editingUser._id}`, formData);
       toast.success("User updated successfully");
-
-      // Update table locally
       setUsers((prev) =>
         prev.map((u) => (u._id === res.data.data._id ? res.data.data : u))
       );
-
       setModalOpen(false);
       setEditingUser(null);
-
-      // Refresh parent if provided
-      if (refreshUsers) refreshUsers();
+      refreshUsers?.();
     } catch (err) {
       console.error(err.response || err);
       toast.error(err.response?.data?.message || "Failed to update user");
     }
   };
 
-  // Delete user
   const handleDelete = async (user) => {
     if (!user?._id) return toast.error("User ID missing");
-    const ok = window.confirm(`Delete user "${user.name}"?`);
-    if (!ok) return;
-
+    if (!window.confirm(`Delete user "${user.name}"?`)) return;
     try {
       await api.delete(`/users/${user._id}`);
       toast.success("User deleted successfully");
-
-      // Remove from table
       setUsers((prev) => prev.filter((u) => u._id !== user._id));
-
-      if (refreshUsers) refreshUsers();
+      refreshUsers?.();
     } catch (err) {
       console.error(err.response || err);
       toast.error("Failed to delete user");
@@ -90,21 +75,24 @@ export default function UsersTable({
   };
 
   return (
-    <div className="p-4 bg-white rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">Users</h2>
+    <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="px-6 py-4 border-b">
+        <h2 className="text-xl font-semibold">Users</h2>
+      </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full border">
+        <table className="min-w-full text-sm table-fixed">
           <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Email</th>
-              <th className="px-4 py-2">Role</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2">Actions</th>
+            <tr className="text-left text-slate-600">
+              <th className="px-4 py-2 w-1/5">Name</th>
+              <th className="px-4 py-2 w-1/3">Email</th>
+              <th className="px-4 py-2 w-1/6">Role</th>
+              <th className="px-4 py-2 w-1/6">Status</th>
+              <th className="px-4 py-2 w-1/6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody>
+
+          <tbody className="divide-y divide-slate-200">
             {loading ? (
               <tr>
                 <td colSpan={5} className="text-center py-4">
@@ -113,12 +101,12 @@ export default function UsersTable({
               </tr>
             ) : users.length ? (
               users.map((user) => (
-                <tr key={user._id}>
+                <tr key={user._id} className="hover:bg-slate-50">
                   <td className="px-4 py-2">{user.name}</td>
-                  <td className="px-4 py-2">{user.email}</td>
-                  <td className="px-4 py-2">{user.role}</td>
-                  <td className="px-4 py-2">{user.status}</td>
-                  <td className="px-4 py-2 space-x-2">
+                  <td className="px-4 py-2 break-words">{user.email}</td>
+                  <td className="px-4 py-2 capitalize">{user.role}</td>
+                  <td className="px-4 py-2 capitalize">{user.status}</td>
+                  <td className="px-4 py-2 text-right space-x-2">
                     <button
                       className="text-blue-600 hover:underline"
                       onClick={() => handleEdit(user)}
@@ -145,7 +133,6 @@ export default function UsersTable({
         </table>
       </div>
 
-      {/* Edit Modal */}
       <Dialog
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -155,21 +142,21 @@ export default function UsersTable({
           <Dialog.Title className="font-semibold mb-4">Edit User</Dialog.Title>
 
           <input
-            className="w-full border p-2 mb-2"
+            className="w-full border p-2 mb-2 rounded"
             value={formData.name}
             name="name"
             placeholder="Name"
             onChange={handleChange}
           />
           <input
-            className="w-full border p-2 mb-2"
+            className="w-full border p-2 mb-2 rounded"
             value={formData.email}
             name="email"
             placeholder="Email"
             onChange={handleChange}
           />
           <select
-            className="w-full border p-2 mb-2"
+            className="w-full border p-2 mb-2 rounded"
             name="role"
             value={formData.role}
             onChange={handleChange}
@@ -178,7 +165,7 @@ export default function UsersTable({
             <option value="admin">Admin</option>
           </select>
           <select
-            className="w-full border p-2 mb-4"
+            className="w-full border p-2 mb-4 rounded"
             name="status"
             value={formData.status}
             onChange={handleChange}

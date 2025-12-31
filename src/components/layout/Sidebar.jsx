@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAuth } from "@/features/auth/useAuth";
 import {
   HomeIcon,
   ChartBarIcon,
@@ -30,6 +31,9 @@ const sections = [
 ];
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
   const [collapsed, setCollapsed] = useState(
     localStorage.getItem("sidebarCollapsed") === "true"
   );
@@ -37,6 +41,12 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   useEffect(() => {
     localStorage.setItem("sidebarCollapsed", collapsed);
   }, [collapsed]);
+
+  const handleLogout = () => {
+    logout(); // clear auth + localStorage
+    setSidebarOpen(false); // close sidebar on mobile
+    navigate("/login", { replace: true });
+  };
 
   const widthClass = collapsed ? "w-20" : "w-64";
 
@@ -53,10 +63,11 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 flex flex-col bg-slate-900 border-r border-slate-800
+          fixed inset-y-0 left-0 z-50 flex flex-col
+          bg-slate-900 border-r border-slate-800
           transform transition-transform duration-300
-          lg:translate-x-0
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0
           ${widthClass}
         `}
       >
@@ -67,8 +78,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
               SaaS Starter
             </span>
           )}
+
           <div className="flex items-center gap-2">
-            {/* Collapse for desktop */}
+            {/* Collapse (desktop) */}
             <button
               className="hidden lg:flex text-slate-400 hover:text-white"
               onClick={() => setCollapsed(!collapsed)}
@@ -79,7 +91,8 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <ChevronLeftIcon className="h-5 w-5" />
               )}
             </button>
-            {/* Close for mobile */}
+
+            {/* Close (mobile) */}
             <button
               className="lg:hidden text-slate-400 hover:text-white"
               onClick={() => setSidebarOpen(false)}
@@ -98,12 +111,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                   {section.title}
                 </p>
               )}
+
               <div className="space-y-1">
                 {section.items.map(({ name, path, icon: Icon }) => (
                   <NavLink
                     key={path}
                     to={path}
-                    onClick={() => setSidebarOpen(false)} // close mobile menu
+                    onClick={() => setSidebarOpen(false)}
                     className={({ isActive }) =>
                       `group relative flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
                       ${
@@ -123,8 +137,11 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </nav>
 
         {/* Logout */}
-        <div className="px-3 py-4 border-t border-slate-800">
-          <button className="flex items-center gap-3 px-3 py-2 rounded-md text-red-500 hover:bg-slate-800 w-full">
+        <div className="border-t border-slate-800 p-3">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2 rounded-md text-red-500 hover:bg-slate-800 w-full"
+          >
             <ArrowLeftOnRectangleIcon className="h-5 w-5" />
             {!collapsed && <span>Logout</span>}
           </button>

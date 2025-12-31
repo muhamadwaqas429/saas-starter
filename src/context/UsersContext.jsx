@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "../api/axios"; // Axios instance
+import api from "@/api/axios";
 
 const UsersContext = createContext(null);
 
@@ -7,22 +7,27 @@ export const UsersProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch users from backend
-  const fetchUsers = async () => {
+  // pagination state
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchUsers = async (params = {}) => {
     try {
       setLoading(true);
-      const res = await api.get("/users");
-      // Ensure we have _id for each user
-      const normalizedUsers = res.data.data.users.map((u) => ({
-        _id: u._id,
-        name: u.name,
-        email: u.email,
-        role: u.role || "user",
-        status: u.status || "active",
-      }));
-      setUsers(normalizedUsers);
+
+      const res = await api.get("/users", {
+        params: {
+          page,
+          limit,
+          ...params,
+        },
+      });
+
+      setUsers(res.data.data.users || []);
+      setTotalPages(res.data.data.totalPages || 1);
     } catch (err) {
-      console.error("Failed to fetch users", err);
+      console.error("Fetch users error", err);
     } finally {
       setLoading(false);
     }
@@ -30,18 +35,28 @@ export const UsersProvider = ({ children }) => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [page, limit]);
 
   return (
-    <UsersContext.Provider value={{ users, loading, fetchUsers, setUsers }}>
+    <UsersContext.Provider
+      value={{
+        users,
+        loading,
+        fetchUsers,
+        page,
+        setPage,
+        limit,
+        setLimit,
+        totalPages,
+      }}
+    >
       {children}
     </UsersContext.Provider>
   );
 };
 
-// Custom hook
 export const useUsers = () => {
-  const context = useContext(UsersContext);
-  if (!context) throw new Error("useUsers must be used inside UsersProvider");
-  return context;
+  const ctx = useContext(UsersContext);
+  if (!ctx) throw new Error("useUsers must be used inside UsersProvider");
+  return ctx;
 };
