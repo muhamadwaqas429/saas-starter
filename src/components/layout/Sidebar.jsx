@@ -11,7 +11,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "@heroicons/react/24/outline";
-
+import api from "@/api/axios.js";
 const sections = [
   {
     title: "Overview",
@@ -42,10 +42,15 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     localStorage.setItem("sidebarCollapsed", collapsed);
   }, [collapsed]);
 
-  const handleLogout = () => {
-    logout(); // clear auth + localStorage
-    setSidebarOpen(false); // close sidebar on mobile
-    navigate("/login", { replace: true });
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (e) {
+      console.error(e);
+    } finally {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
   };
 
   const widthClass = collapsed ? "w-20" : "w-64";
