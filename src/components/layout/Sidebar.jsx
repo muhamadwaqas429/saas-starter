@@ -1,17 +1,17 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useAuth } from "@/features/auth/useAuth";
 import {
   HomeIcon,
   ChartBarIcon,
   UsersIcon,
-  CogIcon,
   ArrowLeftOnRectangleIcon,
   XMarkIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  RectangleGroupIcon,
 } from "@heroicons/react/24/outline";
 import api from "@/api/axios.js";
+
 const sections = [
   {
     title: "Overview",
@@ -22,16 +22,18 @@ const sections = [
   },
   {
     title: "Management",
-    items: [{ name: "Users", path: "/dashboard/users", icon: UsersIcon }],
-  },
-  {
-    title: "Support",
-    items: [{ name: "Settings", path: "/dashboard/settings", icon: CogIcon }],
+    items: [
+      { name: "Users", path: "/dashboard/users", icon: UsersIcon },
+      {
+        name: "Menu Builder",
+        path: "/dashboard/menu-builder",
+        icon: RectangleGroupIcon,
+      },
+    ],
   },
 ];
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
-  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const [collapsed, setCollapsed] = useState(
@@ -85,7 +87,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           )}
 
           <div className="flex items-center gap-2">
-            {/* Collapse (desktop) */}
+            {/* Collapse desktop */}
             <button
               className="hidden lg:flex text-slate-400 hover:text-white"
               onClick={() => setCollapsed(!collapsed)}
@@ -97,7 +99,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
               )}
             </button>
 
-            {/* Close (mobile) */}
+            {/* Close mobile */}
             <button
               className="lg:hidden text-slate-400 hover:text-white"
               onClick={() => setSidebarOpen(false)}
@@ -124,7 +126,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     to={path}
                     onClick={() => setSidebarOpen(false)}
                     className={({ isActive }) =>
-                      `group relative flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
+                      `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
                       ${
                         isActive
                           ? "bg-indigo-600 text-white"
