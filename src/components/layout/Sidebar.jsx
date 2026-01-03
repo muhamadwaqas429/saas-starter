@@ -10,31 +10,12 @@ import {
   ChevronRightIcon,
   RectangleGroupIcon,
 } from "@heroicons/react/24/outline";
-import api from "@/api/axios.js";
-
-const sections = [
-  {
-    title: "Overview",
-    items: [
-      { name: "Dashboard", path: "/dashboard", icon: HomeIcon },
-      { name: "Analytics", path: "/dashboard/analytics", icon: ChartBarIcon },
-    ],
-  },
-  {
-    title: "Management",
-    items: [
-      { name: "Users", path: "/dashboard/users", icon: UsersIcon },
-      {
-        name: "Menu Builder",
-        path: "/dashboard/menu-builder",
-        icon: RectangleGroupIcon,
-      },
-    ],
-  },
-];
+import api from "@/api/axios";
+import { useAuth } from "@/features/auth/useAuth";
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [collapsed, setCollapsed] = useState(
     localStorage.getItem("sidebarCollapsed") === "true"
@@ -47,10 +28,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const handleLogout = async () => {
     try {
       await api.post("/auth/logout");
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
     } finally {
-      localStorage.removeItem("token");
+      localStorage.removeItem("authUser");
       navigate("/login");
     }
   };
@@ -87,7 +68,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           )}
 
           <div className="flex items-center gap-2">
-            {/* Collapse desktop */}
             <button
               className="hidden lg:flex text-slate-400 hover:text-white"
               onClick={() => setCollapsed(!collapsed)}
@@ -99,7 +79,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
               )}
             </button>
 
-            {/* Close mobile */}
             <button
               className="lg:hidden text-slate-400 hover:text-white"
               onClick={() => setSidebarOpen(false)}
@@ -111,36 +90,53 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
         {/* Navigation */}
         <nav className="px-3 py-4 space-y-6 overflow-y-auto flex-1">
-          {sections.map((section) => (
-            <div key={section.title}>
-              {!collapsed && (
-                <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
-                  {section.title}
-                </p>
-              )}
+          {/* Overview */}
+          <div>
+            {!collapsed && (
+              <p className="px-3 mb-2 text-xs uppercase text-slate-500">
+                Overview
+              </p>
+            )}
 
-              <div className="space-y-1">
-                {section.items.map(({ name, path, icon: Icon }) => (
-                  <NavLink
-                    key={path}
-                    to={path}
-                    onClick={() => setSidebarOpen(false)}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
-                      ${
-                        isActive
-                          ? "bg-indigo-600 text-white"
-                          : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                      }`
-                    }
-                  >
-                    <Icon className="h-5 w-5 shrink-0" />
-                    {!collapsed && <span>{name}</span>}
-                  </NavLink>
-                ))}
-              </div>
-            </div>
-          ))}
+            <NavItem
+              to="/dashboard"
+              icon={HomeIcon}
+              label="Dashboard"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/dashboard/analytics"
+              icon={ChartBarIcon}
+              label="Analytics"
+              collapsed={collapsed}
+            />
+          </div>
+
+          {/* Management */}
+          <div>
+            {!collapsed && (
+              <p className="px-3 mb-2 text-xs uppercase text-slate-500">
+                Management
+              </p>
+            )}
+
+            <NavItem
+              to="/dashboard/users"
+              icon={UsersIcon}
+              label="Users"
+              collapsed={collapsed}
+            />
+
+            {/* ✅ USER ONLY */}
+            {user?.role === "user" && (
+              <NavItem
+                to="/dashboard/menu-builder"
+                icon={RectangleGroupIcon}
+                label="Menu Builder"
+                collapsed={collapsed}
+              />
+            )}
+          </div>
         </nav>
 
         {/* Logout */}
@@ -155,5 +151,27 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </div>
       </aside>
     </>
+  );
+}
+
+/* =======================
+   Reusable Nav Item
+======================= */
+function NavItem({ to, icon: Icon, label, collapsed }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
+        ${
+          isActive
+            ? "bg-indigo-600 text-white"
+            : "text-slate-300 hover:bg-slate-800 hover:text-white"
+        }`
+      }
+    >
+      <Icon className="h-5 w-5 shrink-0" />
+      {!collapsed && <span>{label}</span>}
+    </NavLink>
   );
 }

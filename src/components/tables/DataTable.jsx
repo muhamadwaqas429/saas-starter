@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { toast } from "react-hot-toast";
 import api from "@/api/axios";
+import { useAuth } from "@/features/auth/useAuth"; // import auth
 
 export default function UsersTable({
   users: propUsers = [],
   loading: propLoading = false,
   refreshUsers,
 }) {
+  const { user: authUser } = useAuth(); // logged-in user
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -107,15 +109,30 @@ export default function UsersTable({
                   <td className="px-4 py-2 capitalize">{user.role}</td>
                   <td className="px-4 py-2 capitalize">{user.status}</td>
                   <td className="px-4 py-2 text-right space-x-2">
+                    {/* Edit/Delete buttons only enabled for admin */}
                     <button
-                      className="text-blue-600 hover:underline"
-                      onClick={() => handleEdit(user)}
+                      className={`text-blue-600 hover:underline ${
+                        authUser?.role !== "admin"
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        authUser?.role === "admin" && handleEdit(user)
+                      }
+                      disabled={authUser?.role !== "admin"}
                     >
                       Edit
                     </button>
                     <button
-                      className="text-red-600 hover:underline"
-                      onClick={() => handleDelete(user)}
+                      className={`text-red-600 hover:underline ${
+                        authUser?.role !== "admin"
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        authUser?.role === "admin" && handleDelete(user)
+                      }
+                      disabled={authUser?.role !== "admin"}
                     >
                       Delete
                     </button>

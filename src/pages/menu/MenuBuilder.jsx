@@ -1,17 +1,22 @@
-// src/pages/menu/MenuBuilder.jsx
 import { useState } from "react";
-import { menuData } from "@/data/menu.mock";
 import MenuColumn from "@/components/menu/MenuColumn";
+import useMenuData from "@/hooks/useMenuData";
 
 export default function MenuBuilder() {
+  const { menu, loading } = useMenuData();
+
   const [selectedSection, setSelectedSection] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedChoice, setSelectedChoice] = useState(null);
 
+  if (loading) {
+    return <div className="p-4 text-sm text-slate-500">Loading menu...</div>;
+  }
+
   return (
     <div className="h-full w-full p-4">
-      {/* Page Header */}
+      {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
           Menu Builder
@@ -21,13 +26,13 @@ export default function MenuBuilder() {
         </p>
       </div>
 
-      {/* 4 Columns */}
+      {/* Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 h-[calc(100vh-180px)]">
-        {/* Menu Sections */}
+        {/* Sections */}
         <MenuColumn
           title="Menu Sections"
-          items={menuData}
-          selectedId={selectedSection?.id}
+          items={menu}
+          selectedId={selectedSection?._id}
           onSelect={(section) => {
             setSelectedSection(section);
             setSelectedItem(null);
@@ -41,7 +46,7 @@ export default function MenuBuilder() {
         <MenuColumn
           title="Items"
           items={selectedSection?.items || []}
-          selectedId={selectedItem?.id}
+          selectedId={selectedItem?._id}
           onSelect={(item) => {
             setSelectedItem(item);
             setSelectedOption(null);
@@ -54,7 +59,7 @@ export default function MenuBuilder() {
         <MenuColumn
           title="Options"
           items={selectedItem?.options || []}
-          selectedId={selectedOption?.id}
+          selectedId={selectedOption?._id}
           onSelect={(option) => {
             setSelectedOption(option);
             setSelectedChoice(null);
@@ -66,7 +71,7 @@ export default function MenuBuilder() {
         <MenuColumn
           title="Choices"
           items={selectedOption?.choices || []}
-          selectedId={selectedChoice?.id}
+          selectedId={selectedChoice?._id}
           onSelect={(choice) => setSelectedChoice(choice)}
           onAdd={() => console.log("Add Choice")}
         />

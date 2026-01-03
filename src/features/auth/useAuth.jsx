@@ -1,12 +1,11 @@
-//createContext & useContext → for creating a React Context, which lets you share data (like the logged-in user) across your app.
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-//This allows any component wrapped in AuthProvider to access auth stateuser and login
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // For restoring session
+  const [user, setUser] = useState(null); // { _id, name, email, role, token }
+  const [loading, setLoading] = useState(true); // for restoring session
 
   // Restore user from localStorage on mount
   useEffect(() => {
@@ -28,13 +27,13 @@ export function AuthProvider({ children }) {
       const userData = res.data.data.user;
       const token = res.data.data.token;
 
-      // Save user + token
-      setUser({ ...userData, token });
-      localStorage.setItem("authUser", JSON.stringify({ ...userData, token }));
+      const authUser = { ...userData, token };
+      setUser(authUser);
+      localStorage.setItem("authUser", JSON.stringify(authUser));
 
       return true;
     } catch (err) {
-      console.error(err);
+      console.error("Login error:", err.response?.data || err.message);
       return false;
     }
   };
@@ -51,30 +50,31 @@ export function AuthProvider({ children }) {
       const userData = res.data.data.user;
       const token = res.data.data.token;
 
-      // Save user + token
-      setUser({ ...userData, token });
-      localStorage.setItem("authUser", JSON.stringify({ ...userData, token }));
+      const authUser = { ...userData, token };
+      setUser(authUser);
+      localStorage.setItem("authUser", JSON.stringify(authUser));
 
       return true;
     } catch (err) {
-      console.error(err);
+      console.error("Register error:", err.response?.data || err.message);
       return false;
     }
   };
 
-  // Logout
+  // Logout function
   const logout = () => {
     setUser(null);
     localStorage.removeItem("authUser");
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
+    <AuthContext.Provider value={{ user, role: user?.role, loading, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
 }
-// Hook to access auth context
+
+// Hook to use auth context
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used within AuthProvider");

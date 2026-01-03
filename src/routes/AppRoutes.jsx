@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "@/routes/ProtectedRoute";
+import RoleRoute from "@/routes/RoleRoute";
 
 import DashboardLayout from "@/layouts/DashboardLayout";
 import Dashboard from "@/pages/dashboard/Dashboard";
@@ -30,8 +31,15 @@ export default function AppRoutes() {
         <Route path="users" element={<Users />} />
         <Route path="analytics" element={<Analytics />} />
 
-        {/* ✅ NEW MENU BUILDER PAGE */}
-        <Route path="menu-builder" element={<MenuBuilder />} />
+        {/* Menu Builder → USER ONLY */}
+        <Route
+          path="menu-builder"
+          element={
+            <RoleRoute allow={["user"]}>
+              <MenuBuilder />
+            </RoleRoute>
+          }
+        />
       </Route>
 
       {/* ================= FALLBACK ================= */}
