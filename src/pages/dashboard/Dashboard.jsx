@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import api from "@/api/axios";
 import UsersTable from "@/components/tables/DataTable";
 import StatsCards from "@/components/cards/StatCard";
-
+import MenuStatsCards from "../../components/cards/MenuStatsCards";
+import useMenuData from "../../hooks/useMenuData";
 export default function Dashboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { menu, stats } = useMenuData();
   // ✅ Pagination (SAME as Users page)
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -39,13 +40,9 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Stats */}
       <StatsCards users={users} />
-
+      <MenuStatsCards stats={stats} />
       {/* Users Table */}
-      <UsersTable
-        users={users}
-        loading={loading}
-        refreshUsers={fetchUsers}
-      />
+      <UsersTable users={users} loading={loading} refreshUsers={fetchUsers} />
 
       {/* ✅ SAME Pagination UI */}
       <div className="flex justify-end items-center gap-3">

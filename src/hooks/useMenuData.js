@@ -1,5 +1,5 @@
 // src/hooks/useMenuData.js
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import api from "@/api/axios"; // centralized axios instance
 
 export default function useMenuData() {
@@ -9,8 +9,7 @@ export default function useMenuData() {
   const fetchMenu = async () => {
     try {
       setLoading(true);
-      // Remove extra /api since baseURL already has /api
-      const res = await api.get("/menu");
+      const res = await api.get("/menu"); // fetch menu from backend
       setMenu(res.data.data || []);
     } catch (err) {
       console.error("Failed to fetch menu:", err);
@@ -23,5 +22,25 @@ export default function useMenuData() {
     fetchMenu();
   }, []);
 
-  return { menu, loading, refresh: fetchMenu };
+  // Compute stats dynamically
+  const stats = useMemo(() => {
+    let totalMenus = menu.length;
+    let totalItems = 0;
+    let totalOptions = 0;
+    let totalChoices = 0;
+
+    menu.forEach((section) => {
+      totalItems += section.items?.length || 0;
+      section.items?.forEach((item) => {
+        totalOptions += item.options?.length || 0;
+        item.options?.forEach((opt) => {
+          totalChoices += opt.choices?.length || 0;
+        });
+      });
+    });
+
+    return { totalMenus, totalItems, totalOptions, totalChoices };
+  }, [menu]);
+
+  return { menu, loading, stats, refresh: fetchMenu };
 }
