@@ -2,16 +2,13 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 const AuthContext = createContext(null);
-<<<<<<< HEAD
-const API_BASE = import.meta.env.VITE_API_BASE;
-=======
+const API_BASE = import.meta.env.VITE_API_BASE; // Use deployed backend from .env
 
->>>>>>> origin/main
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // {_id, name, email, role, token}
   const [loading, setLoading] = useState(true);
 
-  // Restore session (UNCHANGED LOGIC)
+  // Restore session
   useEffect(() => {
     const storedUser = localStorage.getItem("authUser");
     if (storedUser) {
@@ -20,14 +17,10 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  // LOGIN (UNCHANGED)
+  // LOGIN
   const login = async (email, password) => {
     try {
-<<<<<<< HEAD
       const res = await axios.post(`${API_BASE}/auth/login`, {
-=======
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
->>>>>>> origin/main
         email,
         password,
       });
@@ -45,14 +38,10 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // REGISTER (UNCHANGED)
+  // REGISTER
   const register = async (name, email, password) => {
     try {
-<<<<<<< HEAD
       const res = await axios.post(`${API_BASE}/auth/register`, {
-=======
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
->>>>>>> origin/main
         name,
         email,
         password,
@@ -81,8 +70,8 @@ export function AuthProvider({ children }) {
       value={{
         user,
         role: user?.role,
-        token: user?.token || null, // 🔴 THIS IS THE FIX
-        isAuthenticated: Boolean(user?.token), // optional but safe
+        token: user?.token || null,
+        isAuthenticated: Boolean(user?.token),
         loading,
         login,
         logout,
