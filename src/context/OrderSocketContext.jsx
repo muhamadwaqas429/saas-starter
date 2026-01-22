@@ -12,7 +12,11 @@ export function OrderSocketProvider({ children }) {
   useEffect(() => {
     if (!user?.token) return;
 
+<<<<<<< HEAD
     socketRef.current = io(import.meta.env.VITE_SOCKET_URL, {
+=======
+    socketRef.current = io("http://localhost:5000", {
+>>>>>>> origin/main
       auth: { token: user.token },
     });
 
