@@ -36,103 +36,126 @@ export default function MenuBuilder() {
 
   const selectedSection = sections.find((s) => s._id === selectedSectionId);
   const selectedItem = selectedSection?.items.find(
-    (i) => i._id === selectedItemId
+    (i) => i._id === selectedItemId,
   );
   const selectedOption = selectedItem?.options.find(
-    (o) => o._id === selectedOptionId
+    (o) => o._id === selectedOptionId,
   );
 
   return (
-    <div className="grid grid-cols-4 gap-4 p-4">
-      {/* ================= SECTIONS ================= */}
-      <div className="border p-3 rounded">
-        <div className="flex justify-between mb-2">
-          <h3 className="font-semibold">Sections</h3>
-          <button className="btn" onClick={() => setOpenSectionModal(true)}>
-            +
-          </button>
-        </div>
-        {sections.map((section) => (
-          <button
-            key={section._id}
-            onClick={() => {
-              setSelectedSectionId(section._id);
-              setSelectedItemId(null);
-              setSelectedOptionId(null);
-            }}
-            className={`block w-full text-left p-2 mb-1 border rounded ${
-              selectedSectionId === section._id ? "bg-gray-200" : ""
-            }`}
-          >
-            {section.name}
-          </button>
-        ))}
-      </div>
-
-      {/* ================= ITEMS ================= */}
-      <div className="border p-3 rounded">
-        <div className="flex justify-between mb-2">
-          <h3 className="font-semibold">Items</h3>
-          {selectedSection && (
-            <button className="btn" onClick={() => setOpenItemModal(true)}>
+    <div className="p-4">
+      {/* Responsive grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* ================= SECTIONS ================= */}
+        <div className="border p-3 rounded bg-white shadow-sm">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-semibold text-lg sm:text-base">Sections</h3>
+            <button
+              className="btn text-xl sm:text-lg px-2 py-1"
+              onClick={() => setOpenSectionModal(true)}
+            >
               +
             </button>
-          )}
-        </div>
-        {selectedSection?.items.map((item) => (
-          <button
-            key={item._id}
-            onClick={() => {
-              setSelectedItemId(item._id);
-              setSelectedOptionId(null);
-            }}
-            className={`block w-full text-left p-2 mb-1 border rounded ${
-              selectedItemId === item._id ? "bg-gray-200" : ""
-            }`}
-          >
-            {item.name}
-          </button>
-        ))}
-      </div>
-
-      {/* ================= OPTIONS ================= */}
-      <div className="border p-3 rounded">
-        <div className="flex justify-between mb-2">
-          <h3 className="font-semibold">Options</h3>
-          {selectedItem && (
-            <button className="btn" onClick={() => setOpenOptionModal(true)}>
-              +
-            </button>
-          )}
-        </div>
-        {selectedItem?.options.map((option) => (
-          <button
-            key={option._id}
-            onClick={() => setSelectedOptionId(option._id)}
-            className={`block w-full text-left p-2 mb-1 border rounded ${
-              selectedOptionId === option._id ? "bg-gray-200" : ""
-            }`}
-          >
-            {option.name}
-          </button>
-        ))}
-      </div>
-
-      {/* ================= CHOICES ================= */}
-      <div className="border p-3 rounded">
-        <div className="flex justify-between mb-2">
-          <h3 className="font-semibold">Choices</h3>
-          {selectedOption && (
-            <button className="btn" onClick={() => setOpenChoiceModal(true)}>
-              +
-            </button>
-          )}
-        </div>
-        {selectedOption?.choices.map((choice) => (
-          <div key={choice._id} className="p-2 mb-1 border rounded">
-            {choice.name}
           </div>
-        ))}
+          <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto">
+            {sections.map((section) => (
+              <button
+                key={section._id}
+                onClick={() => {
+                  setSelectedSectionId(section._id);
+                  setSelectedItemId(null);
+                  setSelectedOptionId(null);
+                }}
+                className={`w-full text-left p-2 rounded border ${
+                  selectedSectionId === section._id ? "bg-gray-200" : ""
+                }`}
+              >
+                {section.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* ================= ITEMS ================= */}
+        <div className="border p-3 rounded bg-white shadow-sm">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-semibold text-lg sm:text-base">Items</h3>
+            {selectedSection && (
+              <button
+                className="btn text-xl sm:text-lg px-2 py-1"
+                onClick={() => setOpenItemModal(true)}
+              >
+                +
+              </button>
+            )}
+          </div>
+          <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto">
+            {selectedSection?.items.map((item) => (
+              <button
+                key={item._id}
+                onClick={() => {
+                  setSelectedItemId(item._id);
+                  setSelectedOptionId(null);
+                }}
+                className={`w-full text-left p-2 rounded border ${
+                  selectedItemId === item._id ? "bg-gray-200" : ""
+                }`}
+              >
+                {item.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* ================= OPTIONS ================= */}
+        <div className="border p-3 rounded bg-white shadow-sm">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-semibold text-lg sm:text-base">Options</h3>
+            {selectedItem && (
+              <button
+                className="btn text-xl sm:text-lg px-2 py-1"
+                onClick={() => setOpenOptionModal(true)}
+              >
+                +
+              </button>
+            )}
+          </div>
+          <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto">
+            {selectedItem?.options.map((option) => (
+              <button
+                key={option._id}
+                onClick={() => setSelectedOptionId(option._id)}
+                className={`w-full text-left p-2 rounded border ${
+                  selectedOptionId === option._id ? "bg-gray-200" : ""
+                }`}
+              >
+                {option.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* ================= CHOICES ================= */}
+        <div className="border p-3 rounded bg-white shadow-sm">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-semibold text-lg sm:text-base">Choices</h3>
+            {selectedOption && (
+              <button
+                className="btn text-xl sm:text-lg px-2 py-1"
+                onClick={() => setOpenChoiceModal(true)}
+              >
+                +
+              </button>
+            )}
+          </div>
+          <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto">
+            {selectedOption?.choices.map((choice) => (
+              <div key={choice._id} className="p-2 mb-1 border rounded w-full">
+                {choice.name}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* ================= MODALS ================= */}
